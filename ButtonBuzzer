@@ -1,0 +1,70 @@
+
+import RPi.GPIO as GPIO
+import os
+
+buzzerPin = 11 # Define buzzer pin
+buttonPin = 12 # Define buzzer pin
+
+clear=lambda: os.system('clear') #on Linux System
+
+def setup():
+    print("Program is starting")
+    GPIO.setmode(GPIO.BOARD)
+    GPIO.setup(buzzerPin, GPIO.OUT)
+    GPIO.setup(buttonPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    print("Buzzer is OFF...")
+    
+def buzzOff():
+    GPIO.output(buzzerPin,GPIO.LOW)
+    
+def buzzOn():
+    GPIO.output(buzzerPin,GPIO.HIGH)
+    
+def loop():
+    B=-1
+    while True:
+        if GPIO.input(buttonPin)==GPIO.HIGH:
+            buzzOff()
+            A=-1
+        elif GPIO.input(buttonPin)==GPIO.LOW:
+            buzzOn()
+            A=1
+            
+        while A==B:
+            break
+            
+        else:
+            if A==1:
+                buzzOn()
+                B=1
+                clear()
+                print("Buzzer is ON...")                                      
+            elif A==-1:
+                buzzOff()
+                B=-1
+                clear()
+                print("Buzzer is OFF...")
+        
+""" def loop():
+    while True:
+        if GPIO.input(buttonPin)==GPIO.LOW:
+            GPIO.output(buzzerPin,GPIO.HIGH)
+            print("Buzzer is ON...")
+                                  
+        else:
+            GPIO.output(buzzerPin,GPIO.LOW)
+            print("Buzzer is OFF...") """
+            
+            
+def destroy():
+    GPIO.output(buzzerPin,GPIO.LOW)
+    GPIO.cleanup()
+    
+x=1
+
+if x==1:
+    setup()
+    try:
+        loop()
+    except KeyboardInterrupt:
+       destroy()
