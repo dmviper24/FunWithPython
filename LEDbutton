@@ -1,0 +1,42 @@
+import RPi.GPIO as GPIO
+import time
+
+LED = 11
+button = 12
+LEDstate = False
+
+def setup():
+    print("Program is starting...")
+    GPIO.setmode(GPIO.BOARD)
+    GPIO.setup(LED, GPIO.OUT)
+    GPIO.setup(button, GPIO.IN)
+    GPIO.setup(button, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    
+def buttonevent(channel):
+    global LEDstate
+    print("buttonevent GPIO%d" %channel)
+    LEDstate = not LEDstate
+    if LEDstate:
+        print("Turn on LED...")
+    else:
+        print("Turn off LED...")
+    GPIO.output(LED, LEDstate)
+    
+def loop():
+    #button detect
+    GPIO.add_event_detect(button, GPIO.FALLING, callback = buttonevent, bouncetime=200)
+    while True:
+        pass
+    
+   
+        
+def destroy():
+    GPIO.output(LED, GPIO.LOW)
+    GPIO.cleanup()
+
+if __name__ == '__main__':
+    setup()
+    try:
+        loop()
+    except KeyboardInterrupt:
+        destroy()
